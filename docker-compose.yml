@@ -1,0 +1,25 @@
+services:
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: goodbooks
+
+  mongo_seed:
+    image: mongo:latest
+    links:
+      - mongodb
+    volumes:
+      - ./mongo-seed:/mongo-seed
+    command:
+      - /mongo-seed/import.sh
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongodb
